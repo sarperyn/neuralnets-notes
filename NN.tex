@@ -6,7 +6,7 @@
 \usepackage{titlesec, listings, pgfplots}
 \usepackage{stackengine, hyperref, float, bm}
 \usepackage{tikz}
-
+\usepackage{hyperref}
 \usepackage{subfig, pgfplots, tikz, soul, color}
 \usepackage[linguistics]{forest}
   \documentclass[border=3pt,tikz]{standalone}
@@ -41,8 +41,75 @@
   node 3/.style={node out},
 }
 \def\nstyle{int(\lay<\Nnodlen?min(2,\lay):3)} % map layer number onto 1, 2, or 3
+%some pre determined packages
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[font={small,it}]{caption}
+\usepackage[top=0.5in, bottom=1in, left=1.6in, right=1.in]{geometry}
+\usepackage[normalem]{ulem}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=red,
+}
+\hypersetup{citecolor=magenta}
+
+%using some bib
+\usepackage[backend=biber, sorting=none]{biblatex}
+
+\newcommand*{\blankpage}{%
+\vspace*{\fill}
+{\centering This page intentionally left blank\par}
+\vspace{\fill}}
+\makeatletter
+\renewcommand*{\cleardoublepage}{\clearpage\if@twoside \ifodd\c@page\else
+\blankpage
+\thispagestyle{empty}
+\newpage
+\if@twocolumn\hbox{}\newpage\fi\fi\fi}
+\makeatother
+
+
+\titleformat*{\section}{\Large\bfseries}
+\titleformat*{\subsection}{\large\bfseries}
+\DeclareRobustCommand{\bbone}{\text{\usefont{U}{bbold}{m}{n}1}}
+\DeclareMathOperator{\EX}{\mathbb{E}}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=red,
+}
+\hypersetup{citecolor=magenta}
+
+%using some bib
+\usepackage[backend=biber, sorting=none]{biblatex}
+\addbibresource{references.bib}
+
+
 
 \begin{document}
+\newpage
+\title{\centerline{\rule{15cm}{4pt}} \vspace*{0.2cm} \textbf{A Brief Introduction to Deep Neural Networks}\vspace*{0.01cm} \\\centerline{\rule{15cm}{2pt}}}
+\author{
+  Sarper Yurtseven\\
+  \texttt{sarperyn@gmail.com}}
+\maketitle
+{
+
+}
+
+
+\newpage
+
+\section*{Introduction}
+\begin{flushleft}
+One should have a basic knowledge of linear algebra and calculus to understand some concepts in neural networks.  If you don't have any prior knowledge,  you can have a basic understanding of systems by looking at my notes on \href{https://github.com/sarperyn/linearalgebra/blob/main/3-Systems-of-LinearEquations/Systems-of-LinearEquations.pdf} {systems of linear equations} and \href{https://github.com/sarperyn/linearalgebra/blob/main/2-MatrixOperations/MatrixOperations.pdf}{matrix operations}. These notes are not complete yet. However, after reading the notes you will have a fundamental knowledge to understand the linear algebraic operations we will be doing. Basic linear algebra is not the only requirement as I mentioned above. I do not have calculus notes but I'm working on them.  If you contact me from anywhere, I'm happy to share some resources for calculus.
+\end{flushleft}
+
 
 \section*{Forward Propagation}
 
@@ -168,12 +235,13 @@ $w_{m1} \cdot a^{[L-1]}_{1} + w_{m2} \cdot a^{[L-1]}_{2} + \ldots + w_{mn} \cdot
 \end{center}
 
 \begin{flushleft}
-The equations look like system of linear equations from linear algebra.  In order to get the dimensions we're gonna treat them like it.  Let's rewrite the system as matrices.
+The equations look like a system of linear equations from linear algebra.  To get the dimensions, we're gonna treat them like it.  Let's rewrite the system as matrices.
 \end{flushleft}
 
 
 \vspace{0.5cm}
 
+\begin{center}
 $\left \begin{bmatrix}
         w_{1,1} & w_{1,2} & \ldots & w_{1,n} \\
         w_{2,1} & w_{2,2} & \ldots & w_{2,n} \\
@@ -193,7 +261,7 @@ $\left \begin{bmatrix}
         \vdots \\
         b_{k}^{[L]}
       \end{bmatrix}  
-      
+      =
        \begin{bmatrix}
         z_{1}^{[L]} \\[0.3em]
         z_{2}^{[L]} \\
@@ -202,6 +270,7 @@ $\left \begin{bmatrix}
       \end{bmatrix}}   
       \right 
 $
+\end{center}
 
 \begin{center}
 
@@ -211,7 +280,7 @@ $ \underset{k \times n}{W^{[L]}}  \times \underset{n \times m}{A^{[L-1]}} + \und
 \end{center}
 
 \vspace{0.5cm}
-\section*{Back Propagation}
+\section*{Backward Propagation}
 
 \begin{tikzpicture}[x=3.3cm,y=2cm]
   \message{^^JNeural network with arrows}
@@ -251,7 +320,6 @@ $ \underset{k \times n}{W^{[L]}}  \times \underset{n \times m}{A^{[L-1]}} + \und
 \begin{flushleft}
 We know that in the first step of backward prop, we're given $dA^{[L]}$. Using $dA^{[L]}$ and the given formulas below, we calculate $dA^{[L-1]},dW^{[L]}$ and $db^{[L]}$.  However, now we gonna just do two of them like we did in the meeting. I'm planning to update this document and add other calculations as well. 
 \end{flushleft}
-\newpage
 \subsection*{Formulas}
 \begin{center}
 $dZ^{[L]} = dA^{[L]}  \cdot \sigma(Z^{[L]})$\\
@@ -259,7 +327,7 @@ $dW^{[L]} = \frac{1}{m} dZ^{[L]} \cdot A^{[L-1]T}$
 \end{center}
 
 \begin{flushleft}
-Remember the tree structure. We'll draw it with respect to the neural network top of the page.  Then we'll find the derivatives and compare them with the formulas above.
+Remember the tree structure. 
 \end{flushleft}
 \vspace{0.5}
 %%Tree structure
@@ -297,7 +365,7 @@ Remember the tree structure. We'll draw it with respect to the neural network to
 \end{center}
 
 \begin{flushleft}
-Instead of Andrew's notation, we're gonna use some "real mathematics" notation :)
+Instead of Andrew's notation, we're gonna use the following notation.
  $\frac{\partial L}{\partial Z^{[L]}} = dZ^{[L]}$,  $\frac{\partial L}{\partial W^{[L]}} = dW^{[L]}$. Now let's take some derivative
 \end{flushleft}
 
@@ -334,6 +402,7 @@ $ \underbrace{\frac{\partial L}{\partial W^{[3]}} }  =  \underbrace{ \frac{\part
 \begin{center}
 $ \underbrace{\frac{\partial L}{\partial W^{[2]}} }  =  \underbrace{ \frac{\partial L}{\partial A^{[4]}} \cdot \frac{\partial A^{[4]}}{\partial Z^{[4]}}  \cdot \frac{\partial Z^{[4]}}{\partial A^{[3]}} \cdot \frac{\partial A^{[3]}}{\partial Z^{[3]}} \cdot \frac{\partial Z^{[3]} }{\partial A^{[2]}}  \cdot  \frac{\partial A^{[2]}}{\partial Z^{[2]}} } \cdot \underbrace{\frac{\partial Z^{[2]}}{\partial W^{[2]}}} $
 \end{center}
+
 
 
 \end{document}
